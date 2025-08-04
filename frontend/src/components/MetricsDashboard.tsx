@@ -35,7 +35,7 @@ const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ user }) => {
     try {
       setLoading(true);
       const config = await getAuthHeader();
-      const response = await axios.get('http://localhost:4000//metrics/dashboard', config);
+      const response = await axios.get('https://ai-powered-service-booking-app.onrender.com//metrics/dashboard', config);
       setMetrics(response.data);
       setError(null);
     } catch (err: any) {

@@ -59,7 +59,7 @@ export default function AuthForm({ formType, role }: AuthFormProps) {
       if (role === 'user') signupData.location = location;
 
       try {
-        const res = await fetch('http://localhost:4000//signup', {
+        const res = await fetch('https://ai-powered-service-booking-app.onrender.com//signup', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(signupData),

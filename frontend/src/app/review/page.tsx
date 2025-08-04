@@ -52,7 +52,7 @@ export default function ReviewPage() {
 
     try {
       const idToken = await user.getIdToken();
-      const res = await fetch('http://localhost:4000/reviews', {
+      const res = await fetch('https://ai-powered-service-booking-app.onrender.com/reviews', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

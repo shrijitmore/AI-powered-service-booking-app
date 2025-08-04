@@ -37,7 +37,7 @@ export default function ProfilePage() {
       const user = auth.currentUser;
       if (!user) throw new Error('Not authenticated');
       const idToken = await user.getIdToken();
-      const res = await axios.put('http://13.60.214.254/profile/vehicle', {
+      const res = await axios.put('https://ai-powered-service-booking-app.onrender.com/profile/vehicle', {
         vehicleType, vehicleModel, purchaseDate, odometerKm
       }, { headers: { Authorization: `Bearer ${idToken}` } });
       setVehicleMsg('Vehicle info updated!');
@@ -61,19 +61,19 @@ export default function ProfilePage() {
       const idToken = await user.getIdToken();
       if (editingVehicleId) {
         // Update vehicle
-        await axios.patch(`http://13.60.214.254/profile/vehicle/${editingVehicleId}`, vehicleForm, {
+        await axios.patch(`https://ai-powered-service-booking-app.onrender.com/profile/vehicle/${editingVehicleId}`, vehicleForm, {
           headers: { Authorization: `Bearer ${idToken}` }
         });
         setVehicleMsg('Vehicle updated!');
       } else {
         // Add new vehicle
-        await axios.post('http://13.60.214.254/profile/vehicle', vehicleForm, {
+        await axios.post('https://ai-powered-service-booking-app.onrender.com/profile/vehicle', vehicleForm, {
           headers: { Authorization: `Bearer ${idToken}` }
         });
         setVehicleMsg('Vehicle added!');
       }
       // Refresh vehicles
-      const res = await axios.get('http://13.60.214.254/profile/vehicles', {
+      const res = await axios.get('https://ai-powered-service-booking-app.onrender.com/profile/vehicles', {
         headers: { Authorization: `Bearer ${idToken}` }
       });
       setVehicles(res.data.vehicles || []);
@@ -102,11 +102,11 @@ export default function ProfilePage() {
       const user = auth.currentUser;
       if (!user) throw new Error('Not authenticated');
       const idToken = await user.getIdToken();
-      await axios.delete(`http://localhost:4000/profile/vehicle/${vehicleId}`, {
+      await axios.delete(`https://ai-powered-service-booking-app.onrender.com/profile/vehicle/${vehicleId}`, {
         headers: { Authorization: `Bearer ${idToken}` }
       });
       // Refresh vehicles
-      const res = await axios.get('http://localhost:4000/profile/vehicles', {
+      const res = await axios.get('https://ai-powered-service-booking-app.onrender.com/profile/vehicles', {
         headers: { Authorization: `Bearer ${idToken}` }
       });
       setVehicles(res.data.vehicles || []);
@@ -126,7 +126,7 @@ export default function ProfilePage() {
         const user = auth.currentUser;
         if (!user) return;
         const idToken = await user.getIdToken();
-        const res = await axios.get('http://13.60.214.254/profile/vehicles', {
+        const res = await axios.get('https://ai-powered-service-booking-app.onrender.com/profile/vehicles', {
           headers: { Authorization: `Bearer ${idToken}` }
         });
         setVehicles(res.data.vehicles || []);
@@ -145,7 +145,7 @@ export default function ProfilePage() {
         try {
           const idToken = await user.getIdToken();
           // Call backend to get profile
-          const res = await axios.post("http://13.60.214.254/login", { idToken });
+          const res = await axios.post("https://ai-powered-service-booking-app.onrender.com/login", { idToken });
           setProfile(res.data);
         } catch (err) {
           setProfile(null);
