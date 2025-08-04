@@ -59,7 +59,7 @@ const TechnicianDashboard = ({ profile, requests, onAccept, onClose }: any) => {
       const config = await getAuthHeader();
       const formData = new FormData();
       formData.append('pdf', file);
-      const res = await axios.post('http://13.60.214.254/manual/upload', formData, {
+      const res = await axios.post('http://localhost:4000/manual/upload', formData, {
         ...config,
         headers: { ...config.headers, 'Content-Type': 'multipart/form-data' },
       });
@@ -96,7 +96,7 @@ const TechnicianDashboard = ({ profile, requests, onAccept, onClose }: any) => {
     setSearchError(null);
     try {
       const config = await getAuthHeader();
-      const res = await axios.post('http://13.60.214.254/manual/search', { query: searchQuery }, config);
+      const res = await axios.post('http://localhost:4000/manual/search', { query: searchQuery }, config);
       setSearchResult(res.data);
     } catch (err: any) {
       setSearchError(err?.response?.data?.error || 'Failed to search manual.');
@@ -510,7 +510,7 @@ const UserDashboard = ({ profile, userRequests, onSubmitRequest }: any) => {
         const user = auth.currentUser;
         if (!user) return;
         const idToken = await user.getIdToken();
-        const res = await axios.get('http://13.60.214.254//profile/vehicles', {
+        const res = await axios.get('http://localhost:4000/profile/vehicles', {
           headers: { Authorization: `Bearer ${idToken}` }
         });
         setVehicles(res.data.vehicles || []);
@@ -742,9 +742,9 @@ export default function DashboardPage() {
       if (!config.headers) return;
 
       const [pendingRes, activeRes, closedRes] = await Promise.all([
-        axios.get("http://13.60.214.254//requests/pending", config),
-        axios.get("http://13.60.214.254//requests/active", config),
-        axios.get("http://13.60.214.254//requests/closed", config)
+        axios.get("http://localhost:4000/requests/pending", config),
+        axios.get("http://localhost:4000/requests/active", config),
+        axios.get("http://localhost:4000/requests/closed", config)
       ]);
       
       setTechRequests({ pending: pendingRes.data, active: activeRes.data, closed: closedRes.data });
@@ -755,8 +755,8 @@ export default function DashboardPage() {
       if (!config.headers) return;
 
       const [requestsRes, techsRes] = await Promise.all([
-          axios.get("http://13.60.214.254//requests/all", config),
-          axios.get("http://13.60.214.254//users/technicians", config)
+          axios.get("http://localhost:4000/requests/all", config),
+          axios.get("http://localhost:4000/users/technicians", config)
       ]);
 
       setManagerData({ allRequests: requestsRes.data, technicians: techsRes.data });
@@ -766,7 +766,7 @@ export default function DashboardPage() {
     const config = await getAuthHeader();
     if (!config.headers) return;
     try {
-      const res = await axios.get("http://13.60.214.254//requests/mine", config);
+      const res = await axios.get("http://localhost:4000/requests/mine", config);
       setUserRequests(res.data);
     } catch (err) {
       setApiError("Could not load your service requests.");
@@ -776,7 +776,7 @@ export default function DashboardPage() {
   const handleSubmitUserRequest = async (details: string, setError: (msg: string) => void, vehicleId: string) => {
     try {
       const config = await getAuthHeader();
-      await axios.post("http://13.60.214.254//requests", { requestDetails: details, vehicleId }, config);
+      await axios.post("http://localhost:4000/requests", { requestDetails: details, vehicleId }, config);
       await fetchUserRequests();
     } catch (error: any) {
       setError(error?.response?.data?.error || "Failed to submit request.");
@@ -788,7 +788,7 @@ export default function DashboardPage() {
       if (user) {
         try {
           const idToken = await user.getIdToken();
-          const res = await axios.post("http://13.60.214.254/login", { idToken });
+          const res = await axios.post("http://localhost:4000/login", { idToken });
           const userProfile = res.data;
           setProfile(userProfile);
 
@@ -816,7 +816,7 @@ export default function DashboardPage() {
   const handleAcceptRequest = async (requestId: string) => {
     try {
       const config = await getAuthHeader();
-      await axios.put(`http://13.60.214.254//requests/${requestId}/accept`, {}, config);
+      await axios.put(`http://localhost:4000/requests/${requestId}/accept`, {}, config);
       await fetchTechnicianData();
     } catch (error) {
       console.error("Failed to accept request:", error);
@@ -826,7 +826,7 @@ export default function DashboardPage() {
   const handleCloseRequest = async (requestId: string) => {
     try {
       const config = await getAuthHeader();
-      await axios.put(`http://13.60.214.254//requests/${requestId}/close`, {}, config);
+      await axios.put(`http://localhost:4000/requests/${requestId}/close`, {}, config);
       await fetchTechnicianData();
     } catch (error) {
       console.error("Failed to close request:", error);
@@ -840,7 +840,7 @@ export default function DashboardPage() {
     }
     try {
         const config = await getAuthHeader();
-        const response = await axios.put(`http://13.60.214.254//requests/${requestId}/assign`, { technicianId }, config);
+        const response = await axios.put(`http://localhost:4000/requests/${requestId}/assign`, { technicianId }, config);
         console.log("Assignment successful:", response.data);
         
         // Add a small delay before refreshing data to avoid race conditions
@@ -872,7 +872,7 @@ export default function DashboardPage() {
     try {
       const config = await getAuthHeader();
       const res = await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL || 'http://13.60.214.254/'}/requests/${requestId}/assign-ai`,
+        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/requests/${requestId}/assign-ai`,
         {},
         config
       );
@@ -892,7 +892,7 @@ export default function DashboardPage() {
     try {
       const config = await getAuthHeader();
       const res = await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL || 'http://13.60.214.254/'}/requests/assign-ai-bulk`,
+        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/requests/assign-ai-bulk`,
         {},
         config
       );

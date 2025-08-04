@@ -1,16 +1,55 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
-// Use dynamic import for ESM module
+
+// Add DOM polyfills for Node.js environment
+const { JSDOM } = require('jsdom');
+const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
+  url: 'http://localhost'
+});
+
+global.window = dom.window;
+global.document = dom.window.document;
+global.navigator = dom.window.navigator;
+global.DOMMatrix = dom.window.DOMMatrix;
+global.DOMPoint = dom.window.DOMPoint;
+global.DOMRect = dom.window.DOMRect;
+global.getComputedStyle = dom.window.getComputedStyle;
+global.createImageBitmap = dom.window.createImageBitmap;
+
+// Use the legacy build for Node.js environments
 let pdfjsLib;
+let pdfjsConfigAttempt = '';
 (async () => {
   try {
-    pdfjsLib = await import('pdfjs-dist/build/pdf.mjs');
-  } catch (err) {
-    console.error('PDF.js import failed:', err.message);
-    pdfjsLib = null;
+    pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
+    pdfjsLib.GlobalWorkerOptions.workerSrc = null;
+    pdfjsConfigAttempt = 'ESM import, workerSrc=null';
+  } catch (err1) {
+    try {
+      pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
+      pdfjsLib.GlobalWorkerOptions.workerSrc = '';
+      pdfjsConfigAttempt = 'ESM import, workerSrc=empty string';
+    } catch (err2) {
+      try {
+        pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js');
+        pdfjsLib.GlobalWorkerOptions.workerSrc = null;
+        pdfjsConfigAttempt = 'CommonJS require, workerSrc=null';
+      } catch (err3) {
+        try {
+          pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js');
+          pdfjsLib.GlobalWorkerOptions.workerSrc = '';
+          pdfjsConfigAttempt = 'CommonJS require, workerSrc=empty string';
+        } catch (err4) {
+          console.error('PDF.js import failed:', err1.message, err2.message, err3.message, err4.message);
+          pdfjsLib = null;
+          pdfjsConfigAttempt = 'ALL FAILED';
+        }
+      }
+    }
   }
 })();
+
 const pdfjsOptions = {
   standardFontDataUrl: path.resolve(
     process.cwd(),
@@ -132,11 +171,13 @@ function registerManualRoutes(verifyToken) {
     if (!pdfjsLib) {
       return res.status(503).json({ error: 'PDF processing is currently unavailable.' });
     }
+    console.log('PDF.js config attempt:', pdfjsConfigAttempt);
     try {
       vectorStore.clear();
       const pdf = await pdfjsLib.getDocument({
         data: new Uint8Array(req.file.buffer),
-        ...pdfjsOptions
+        ...pdfjsOptions,
+        disableWorker: true // Always try to disable worker explicitly
       }).promise;
       vectorStore.metadata.currentFileName = req.file.originalname;
       vectorStore.metadata.pageCount = pdf.numPages;
@@ -163,8 +204,8 @@ function registerManualRoutes(verifyToken) {
         metadata: vectorStore.metadata
       });
     } catch (error) {
-      console.error('Error processing PDF:', error);
-      res.status(500).json({ error: 'Failed to process PDF', details: error.message });
+      console.error('Error processing PDF:', error.stack || error);
+      res.status(500).json({ error: 'Failed to process PDF', details: error.stack || error.message });
     }
   });
 

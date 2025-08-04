@@ -52,7 +52,7 @@ export default function ReviewPage() {
 
     try {
       const idToken = await user.getIdToken();
-      const res = await fetch('http://13.60.214.254/reviews', {
+      const res = await fetch('http://localhost:4000/reviews', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

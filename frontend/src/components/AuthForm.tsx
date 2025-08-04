@@ -59,7 +59,7 @@ export default function AuthForm({ formType, role }: AuthFormProps) {
       if (role === 'user') signupData.location = location;
 
       try {
-        const res = await fetch('http://13.60.214.254//signup', {
+        const res = await fetch('http://localhost:4000//signup', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(signupData),

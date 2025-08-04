@@ -35,7 +35,7 @@ const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ user }) => {
     try {
       setLoading(true);
       const config = await getAuthHeader();
-      const response = await axios.get('http://13.60.214.254//metrics/dashboard', config);
+      const response = await axios.get('http://localhost:4000//metrics/dashboard', config);
       setMetrics(response.data);
       setError(null);
     } catch (err: any) {

@@ -102,11 +102,11 @@ export default function ProfilePage() {
       const user = auth.currentUser;
       if (!user) throw new Error('Not authenticated');
       const idToken = await user.getIdToken();
-      await axios.delete(`http://13.60.214.254/profile/vehicle/${vehicleId}`, {
+      await axios.delete(`http://localhost:4000/profile/vehicle/${vehicleId}`, {
         headers: { Authorization: `Bearer ${idToken}` }
       });
       // Refresh vehicles
-      const res = await axios.get('http://13.60.214.254/profile/vehicles', {
+      const res = await axios.get('http://localhost:4000/profile/vehicles', {
         headers: { Authorization: `Bearer ${idToken}` }
       });
       setVehicles(res.data.vehicles || []);
