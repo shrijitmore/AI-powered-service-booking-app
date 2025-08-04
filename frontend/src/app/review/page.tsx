@@ -1,7 +1,7 @@
 "use client";
 import { useState } from 'react';
 import { Star } from 'lucide-react';
-import { auth } from '@/lib/firebase';
+import { auth } from '../../lib/firebase';
 
 const StarRating = ({ rating, setRating }: { rating: number; setRating: (rating: number) => void }) => {
   return (

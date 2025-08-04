@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { auth } from '../lib/firebase';
 import { useRouter } from 'next/navigation';
 
 const Navbar = () => {

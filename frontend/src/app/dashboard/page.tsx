@@ -1,10 +1,10 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { auth } from '../../lib/firebase';
 import { useRouter } from 'next/navigation';
 import axios from "axios";
-import MetricsDashboard from '@/components/MetricsDashboard';
+import MetricsDashboard from '../../components/MetricsDashboard';
 import React, { useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import dayjs from 'dayjs';
