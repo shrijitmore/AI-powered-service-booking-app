@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Star } from 'lucide-react';
 import { auth } from '@/lib/firebase';
 
-const StarRating = ({ rating, setRating }) => {
+const StarRating = ({ rating, setRating }: { rating: number; setRating: (rating: number) => void }) => {
   return (
     <div className="flex space-x-1">
       {[...Array(5)].map((_, index) => {
@@ -70,8 +70,8 @@ export default function ReviewPage() {
       setRating(0);
       setComment('');
       setTechnicianId('');
-    } catch (err: any) {
-      setError(err.message);
+         } catch (err: unknown) {
+             setError(err instanceof Error ? err.message : 'An error occurred');
     }
   };
 

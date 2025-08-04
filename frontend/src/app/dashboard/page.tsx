@@ -595,7 +595,7 @@ const UserDashboard = ({ profile, userRequests, onSubmitRequest }: any) => {
                             <ul className="ml-2 text-sm space-y-1">
                               {Object.entries(details).map(([k, v]) => (
                                 <li key={k} className={k === 'Status' ? statusColor(v as string) + ' font-semibold' : ''}>
-                                  <b>{k}:</b> {v}
+                                  <b>{k}:</b> {String(v)}
                                   {k === 'Status' && (v === 'Active' ? <FaCheckCircle className="inline ml-1 text-green-500" /> : <FaExclamationCircle className="inline ml-1 text-red-500" />)}
                                 </li>
                               ))}
